@@ -42,6 +42,12 @@ You will have the following directory tree:<br>
 The images in test, Testing and Training folders have been taken from
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.
 <br> 
+<br>
+Please run the following commnad to install Python packages for this project.<br>
+<pre>
+pip install -r requirements.txt
+</pre>
+<br>
 
 <h2>
 2 Python classes for Brain Tumor Classification
