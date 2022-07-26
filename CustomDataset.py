@@ -32,10 +32,10 @@ class CustomDataset:
   def create(self, FLAGS):
     data_dir    = FLAGS.data_dir
     image_size  = FLAGS.image_size
-    #eval_image_size = FLAGS.eval_image_size
+    eval_image_size = FLAGS.eval_image_size
     target_size = (image_size, image_size)
-    #eval_size   = (eval_image_size, eval_image_size)
-    eval_size   = (image_size, image_size)
+    eval_size   = (eval_image_size, eval_image_size)
+    #eval_size   = (image_size, image_size)
 
     batch_size  = FLAGS.batch_size
     """    
@@ -88,7 +88,8 @@ class CustomDataset:
        )
        valid_generator = valid_datagen.flow_from_directory(
              data_dir, 
-             target_size   = target_size, 
+             #target_size   = target_size,
+             target_size   = eval_size,
              batch_size    = 1, #batch_size, 
              interpolation = "bilinear",
              subset        = "validation", 
@@ -115,7 +116,8 @@ class CustomDataset:
        )
        valid_generator = valid_datagen.flow_from_directory(
              data_dir, 
-             target_size   = target_size, 
+             #target_size   = target_size, 
+             target_size   = eval_size,
              batch_size    = 1, #batch_size, 
              interpolation = "bilinear",
              subset        = "validation", 

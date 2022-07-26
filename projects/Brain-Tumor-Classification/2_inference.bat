@@ -1,3 +1,4 @@
+rem 2_inference.bat
 python ../../EfficientNetV2Inferencer.py ^
   --model_name=efficientnetv2-m  ^
   --model_dir=./models ^

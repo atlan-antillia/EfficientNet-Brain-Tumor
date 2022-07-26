@@ -103,17 +103,18 @@ python ../../EfficientNetV2ModelTrainer.py ^
   --ckpt_dir=../../efficientnetv2-m/model ^
   --num_classes=4 ^
   --image_size=384 ^
+  --eval_image_size=480 ^
   --data_dir=./Training ^
   --model_dir=./models ^
   --data_augmentation=True ^
   --fine_tuning=True ^
   --monitor=val_loss ^
-  --learning_rate=0.005 ^
+  --learning_rate=0.002 ^
   --trainable_layers_ratio=0.2 ^
-  --num_epochs=20 ^
+  --num_epochs=50 ^
   --batch_size=4 ^
   --patience=10 ^
-  --debug=True  
+  --debug=True   
 </pre>
 
 This will generate a <b>best_model.h5</b> in the models folder specified by --model_dir parameter.<br>
@@ -121,14 +122,14 @@ Furthermore, it will generate a <a href="./projects/Brain-Tumor-Classification/e
 and <a href="./projects/Brain-Tumor-Classification/eval/train_losses.csv">train_losses</a> files
 <br>
 Training console output:<br>
-<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_20_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_40_0726_2.png" width="640" height="auto"><br>
 <br>
 Train_accuracies:<br>
-<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_20_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_40_0726_2.png" width="640" height="auto"><br>
 
 <br>
 Train_losses:<br>
-<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_20_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_40_0726_2.png" width="640" height="auto"><br>
 
 <br>
 
@@ -158,6 +159,6 @@ python ../../EfficientNetV2Inferencer.py ^
 This will generate <a href="./projects/Brain-Tumor-Classification/inference/inference.csv">inference result file</a>.
  
 Inference console output:<br>
-<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_20_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_40_0726_2.png" width="640" height="auto"><br>
 <br>
 
