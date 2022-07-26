@@ -9,7 +9,7 @@ EfficientNetV2 Brain Tumor Classification
  The Brain Tumor dataset used here has been taken from the following web site:<br>
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>
  <br>
- We use python 3.8 and tensorflow 2.8.0 environment.<br>
+ We use python 3.8 and tensorflow 2.8.0 environment on Windows 11.<br>
    
 <h3>
 1.1 Clone repository
