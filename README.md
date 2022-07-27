@@ -128,14 +128,14 @@ Furthermore, it will generate a <a href="./projects/Brain-Tumor-Classification/e
 and <a href="./projects/Brain-Tumor-Classification/eval/train_losses.csv">train_losses</a> files
 <br>
 Training console output:<br>
-<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_50_0727.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_50_0727.png" width="740" height="auto"><br>
 <br>
 Train_accuracies:<br>
-<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_50_0727.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_50_0727.png" width="740" height="auto"><br>
 
 <br>
 Train_losses:<br>
-<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_50_0727.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_50_0727.png" width="740" height="auto"><br>
 
 <br>
 
@@ -185,6 +185,9 @@ pituitary_tumor<br>
 This inference command will generate <a href="./projects/Brain-Tumor-Classification/inference/inference.csv">inference result file</a>.
 <br>
 Inference console output:<br>
-<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_50_0727.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_50_0727.png" width="740" height="auto"><br>
+<br>
+Inference result:<br>
+<img src="./asset/Brain-Tumor-Classification_inference_at_epoch_50_0727.png" width="740" height="auto"><br>
 <br>
 
