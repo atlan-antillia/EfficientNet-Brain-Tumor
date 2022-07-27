@@ -2,7 +2,7 @@
 EfficientNetV2 Brain Tumor Classification
 
 <h2>
-1 EfficientNetV2 Brain Tumor Classification (Updated: 2022/07/26)
+1 EfficientNetV2 Brain Tumor Classification (Updated: 2022/07/27)
 </h2>
 
  This is a simple Brain Tumor Classification project based on <b>efficientnetv2</b> in <a href="https://github.com/google/automl">Brain AutoML</a>
@@ -96,7 +96,7 @@ Please download the pretrained checkpoint file from <a href="https://storage.goo
 <h3>
 4.1 Train script
 </h3>
-Please run the following bat file to train our brain-tumor efficientv2 model.<br>
+Please run the following bat file to train our brain-tumor efficientnetv2 model.<br>
 <pre>
 ./1_train.bat
 </pre>
@@ -116,7 +116,7 @@ python ../../EfficientNetV2ModelTrainer.py ^
   --fine_tuning=True ^
   --monitor=val_loss ^
   --learning_rate=0.002 ^
-  --trainable_layers_ratio=0.2 ^
+  --trainable_layers_ratio=0.3 ^
   --num_epochs=50 ^
   --batch_size=4 ^
   --patience=10 ^
@@ -128,14 +128,14 @@ Furthermore, it will generate a <a href="./projects/Brain-Tumor-Classification/e
 and <a href="./projects/Brain-Tumor-Classification/eval/train_losses.csv">train_losses</a> files
 <br>
 Training console output:<br>
-<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_40_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_50_0727.png" width="640" height="auto"><br>
 <br>
 Train_accuracies:<br>
-<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_40_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_50_0727.png" width="640" height="auto"><br>
 
 <br>
 Train_losses:<br>
-<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_40_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_50_0727.png" width="640" height="auto"><br>
 
 <br>
 
@@ -152,7 +152,7 @@ python ../../EfficientNetV2Inferencer.py ^
   --model_name=efficientnetv2-m  ^
   --model_dir=./models ^
   --fine_tuning=True ^
-  --trainable_layers_ratio=0.2 ^
+  --trainable_layers_ratio=0.3 ^
   --image_path=./test/*.jpg ^
   --eval_image_size=480 ^
   --num_classes=4 ^
@@ -185,6 +185,6 @@ pituitary_tumor<br>
 This inference command will generate <a href="./projects/Brain-Tumor-Classification/inference/inference.csv">inference result file</a>.
 <br>
 Inference console output:<br>
-<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_40_0726_2.png" width="640" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_50_0727.png" width="640" height="auto"><br>
 <br>
 

@@ -3,7 +3,7 @@ python ../../EfficientNetV2Inferencer.py ^
   --model_name=efficientnetv2-m  ^
   --model_dir=./models ^
   --fine_tuning=True ^
-  --trainable_layers_ratio=0.2 ^
+  --trainable_layers_ratio=0.3 ^
   --image_path=./test/*.jpg ^
   --eval_image_size=480 ^
   --num_classes=4 ^

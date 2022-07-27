@@ -2,7 +2,6 @@ rem 1_train.bat
 python ../../EfficientNetV2ModelTrainer.py ^
   --model_dir=./models ^
   --model_name=efficientnetv2-m  ^
-  --dataset_cfg=imagenetFt ^
   --ckpt_dir=../../efficientnetv2-m/model ^
   --num_classes=4 ^
   --image_size=384 ^
@@ -13,7 +12,7 @@ python ../../EfficientNetV2ModelTrainer.py ^
   --fine_tuning=True ^
   --monitor=val_loss ^
   --learning_rate=0.002 ^
-  --trainable_layers_ratio=0.2 ^
+  --trainable_layers_ratio=0.3 ^
   --num_epochs=50 ^
   --batch_size=4 ^
   --patience=10 ^
