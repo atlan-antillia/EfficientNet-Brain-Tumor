@@ -199,7 +199,6 @@ class EfficientNetV2ModelTrainer:
         verbose           = 1,
         save_best_only    = True,
         save_weights_only = True)
-    #ckpt_callback.set_model(self.model)
     
     #tb_callback = tf.keras.callbacks.TensorBoard(
     #    log_dir=FLAGS.model_dir, update_freq=100)
@@ -209,6 +208,7 @@ class EfficientNetV2ModelTrainer:
     steps_per_epoch  = self.train_generator.samples // self.train_generator.batch_size
     validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
     callbacks =  [epch_callback, ckpt_callback, rstr_callback]
+
     # FLAGS.patience default value is 0
     if FLAGS.patience > 0:
       erstp_callback = tf.keras.callbacks.EarlyStopping(monitor  = FLAGS.monitor, 
