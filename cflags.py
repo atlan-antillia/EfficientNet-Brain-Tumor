@@ -39,8 +39,8 @@ def define_flags():
 
   # 2022/07/20 antillia.com
   flags.DEFINE_bool('channels_first', False, 'Channel first flag.')
-  
   flags.DEFINE_string('ckpt_dir', '', 'Pretrained checkpoint dir.')
+  flags.DEFINE_string('data_generator_config', '', 'Image data generator config filepath .')
 
   flags.DEFINE_string('strategy', 'gpu', 'Strategy: tpu, gpus, gpu.')
   flags.DEFINE_string('best_model_name', 'best_model.5h', 'Best model name.')
@@ -58,5 +58,5 @@ def define_flags():
   flags.DEFINE_bool('debug', True, 'Debug flag.')
   flags.DEFINE_float('trainable_layers_ratio',  0.3, 'Trainable layers ratio')
   flags.DEFINE_string('monitor', 'val_loss', 'Early stopping monitor.')
-  flags.DEFINE_integer('patience', 10, 'Early stopping patience.')
+  flags.DEFINE_integer('patience', 0, 'Early stopping patience.')
   

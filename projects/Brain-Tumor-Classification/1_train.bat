@@ -2,6 +2,7 @@ rem 1_train.bat
 python ../../EfficientNetV2ModelTrainer.py ^
   --model_dir=./models ^
   --model_name=efficientnetv2-m  ^
+  --data_generator_config=./data_generator.config ^
   --ckpt_dir=../../efficientnetv2-m/model ^
   --num_classes=4 ^
   --image_size=384 ^

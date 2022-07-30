@@ -49,8 +49,10 @@ import datasets
 import utils
 import hparams
 import utils
-import effnetv2_configs
-import effnetv2_model
+#import effnetv2_configs
+#import effnetv2_model
+
+import shutil
 
 sys.path.append("../../")
 
@@ -91,19 +93,55 @@ class EfficientNetV2ModelTrainer:
     ckpt_dir    = FLAGS.ckpt_dir
 
     trainable_layers_ratio = FLAGS.trainable_layers_ratio
-    #if not (trainable_layers_ratio > 0.1 and trainable_layers_ratio <0.5):
-    #  print("--- Set default trainable_layers_ratio=0.3")
-    #  trainable_layers_ratio = 0.3
+    if not (trainable_layers_ratio > 0.1 and trainable_layers_ratio <0.5):
+       print("--- Set default trainable_layers_ratio=0.3")
+       trainable_layers_ratio = 0.3
 
     finetuning_model = FineTuningModel(model_name, ckpt_dir)
     
     self.model = finetuning_model.build(image_size, 
-                                        num_classes, 
+                                        num_classes,
                                         fine_tuning, 
-                                        trainable_layers_ratio=trainable_layers_ratio)
+                                        trainable_layers_ratio = trainable_layers_ratio)
     #self.model.build((None, image_size, image_size, 3))
     if FLAGS.debug:
       self.model.summary()
+
+    model_dir = FLAGS.model_dir
+    if not os.path.exists(model_dir):
+      os.makedirs(model_dir)
+    self.save_train_params(sys.argv, model_dir)          
+
+
+  def save_train_params(self, argv, dir, section="train"):
+    args =  argv[1:]
+    filename = section + ".conf"
+    filepath = os.path.join(dir, filename)
+    NL = "\n"
+    with open(filepath, "w") as f:
+      f.write("; "+  filename + NL)
+      f.write("[" + section + "]"  + NL)
+      for arg in args:
+        a     = arg.split("=")
+        if len(a) == 2:
+          key   = a[0]
+          value = a[1]
+          hypens = "--"
+          if key.startswith(hypens):
+            key = key[len(hypens):]
+          #print(" key {} value {}".format(key, value))
+          print("-----------key {} value {}".format(key, value))
+          if key == "data_generator_config":
+            basename = os.path.basename(value)
+            filepath = os.path.join(dir, basename)
+            abspath = os.path.abspath(value)
+            if os.path.exists(abspath):
+              shutil.copy2(abspath, filepath)
+            else:
+              print("--- Not Found {}".format(abspath))
+              raise Exception("Not found " + abspath)
+          f.write(key + "=" + str(value) + NL)
+
 
   def build_optimizer(self, learning_rate,
                         optimizer_name='rmsprop',
@@ -135,12 +173,13 @@ class EfficientNetV2ModelTrainer:
     learning_rate=FLAGS.learning_rate
     # Use adam 
     optimizer = self.build_optimizer(
-        learning_rate, optimizer_name='adam') 
-        #optimizer_name='rmsprop')
+        learning_rate,  #optimizer_name='adam') 
+        optimizer_name='rmsprop')
     
+    loss      = tf.keras.losses.CategoricalCrossentropy(from_logits=True, label_smoothing=0.1),
     self.model.compile(
        optimizer = optimizer,
-       loss      = tf.keras.losses.CategoricalCrossentropy(from_logits=True, label_smoothing=0.1),
+       loss      = loss,
        metrics   = ['accuracy']
       )
 
@@ -148,10 +187,6 @@ class EfficientNetV2ModelTrainer:
   def train_eval(self):
     epch_callback  = EpochChangeCallback(FLAGS.eval_dir)
 
-    erstp_callback = tf.keras.callbacks.EarlyStopping(monitor  = FLAGS.monitor, 
-                                                      patience = FLAGS.patience, 
-                                                      verbose  = 2, 
-                                                      mode     = 'auto')
     model_dir = FLAGS.model_dir
     if not os.path.exists(model_dir):
       os.makedirs(model_dir)                 
@@ -173,14 +208,23 @@ class EfficientNetV2ModelTrainer:
 
     steps_per_epoch  = self.train_generator.samples // self.train_generator.batch_size
     validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
-  
+    callbacks =  [epch_callback, ckpt_callback, rstr_callback]
+    # FLAGS.patience default value is 0
+    if FLAGS.patience > 0:
+      erstp_callback = tf.keras.callbacks.EarlyStopping(monitor  = FLAGS.monitor, 
+                                                      patience = FLAGS.patience, 
+                                                      verbose  = 2, 
+                                                      mode     = 'auto')
+      print("--- Add EarlyStopping callback")
+      callbacks.append(erstp_callback)
+
     self.model.fit(
       self.train_generator,
       epochs           = self.num_epochs, 
       steps_per_epoch  = steps_per_epoch,
       validation_data  = self.valid_generator,
       validation_steps = validation_steps,
-      callbacks        = [epch_callback, erstp_callback, ckpt_callback, rstr_callback],
+      callbacks        = callbacks,
       verbose=1
       )
 
