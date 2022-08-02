@@ -4,6 +4,7 @@ python ../../EfficientNetV2ModelTrainer.py ^
   --model_name=efficientnetv2-m  ^
   --data_generator_config=./data_generator.config ^
   --ckpt_dir=../../efficientnetv2-m/model ^
+  --optimizer=rmsprop ^
   --num_classes=4 ^
   --image_size=384 ^
   --eval_image_size=480 ^

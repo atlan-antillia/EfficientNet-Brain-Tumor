@@ -2,7 +2,7 @@
 EfficientNetV2 Brain Tumor Classification
 
 <h2>
-1 EfficientNetV2 Brain Tumor Classification (Updated: 2022/08/01)
+1 EfficientNetV2 Brain Tumor Classification (Updated: 2022/08/03)
 </h2>
 
  This is a simple Brain Tumor Classification project based on <b>efficientnetv2</b> in <a href="https://github.com/google/automl">Brain AutoML</a>
@@ -17,6 +17,10 @@ from a data_generator.config file. (2022/08/01).
 <li>
 Modified <a href="./EfficientNetV2ModelTrainer.py">EfficientNetV2ModelTrainer</a> class to save the commandline training parameters
 as a file to a model_dir (2022/08/01). 
+</li>
+<li>
+Updated <a href="./projects/Brain-Tumor-Classification/data_generator.config">data_generator.config</a> to improve inference accuracy.
+ (2022/08/03). 
 </li>
    
 <h3>
@@ -110,11 +114,11 @@ Please run the following bat file to train our brain-tumor efficientnetv2 model.
 </pre>
 <pre>
 rem 1_train.bat
-python ../../EfficientNetV2ModelTrainer.py ^
   --model_dir=./models ^
   --model_name=efficientnetv2-m  ^
   --data_generator_config=./data_generator.config ^
   --ckpt_dir=../../efficientnetv2-m/model ^
+  --optimizer=rmsprop ^
   --num_classes=4 ^
   --image_size=384 ^
   --eval_image_size=480 ^
@@ -128,7 +132,7 @@ python ../../EfficientNetV2ModelTrainer.py ^
   --num_epochs=50 ^
   --batch_size=4 ^
   --patience=10 ^
-  --debug=True  
+  --debug=True 
 </pre>
 
 This will generate a <b>best_model.h5</b> in the models folder specified by --model_dir parameter.<br>
@@ -136,14 +140,14 @@ Furthermore, it will generate a <a href="./projects/Brain-Tumor-Classification/e
 and <a href="./projects/Brain-Tumor-Classification/eval/train_losses.csv">train_losses</a> files
 <br>
 Training console output:<br>
-<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_50_0731.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_24_0802.png" width="740" height="auto"><br>
 <br>
 Train_accuracies:<br>
-<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_50_0731.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_24_0802.png" width="740" height="auto"><br>
 
 <br>
 Train_losses:<br>
-<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_50_0731.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_24_0802.png" width="740" height="auto"><br>
 
 <br>
 
@@ -193,6 +197,9 @@ pituitary_tumor<br>
 This inference command will generate <a href="./projects/Brain-Tumor-Classification/inference/inference.csv">inference result file</a>.
 <br>
 Inference console output:<br>
-<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_50_0731.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_24_0802.png" width="740" height="auto"><br>
 <br>
+
+Inference result (inference.csv):<br>
+<img src="./asset/Brain-Tumor-Classification_inference_at_epoch_24_0802.png" width="740" height="auto"><br>
 

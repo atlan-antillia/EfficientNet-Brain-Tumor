@@ -174,7 +174,7 @@ class EfficientNetV2ModelTrainer:
     # Use adam 
     optimizer = self.build_optimizer(
         learning_rate,  #optimizer_name='adam') 
-        optimizer_name='rmsprop')
+        optimizer_name=FLAGS.optimizer) # 2022/08/01 'rmsprop')
     
     loss      = tf.keras.losses.CategoricalCrossentropy(from_logits=True, label_smoothing=0.1),
     self.model.compile(
