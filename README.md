@@ -1,8 +1,22 @@
-# EfficientNet-Brain-Tumor
-EfficientNetV2 Brain Tumor Classification
+<h2>EfficientNetV2 Brain Tumor Classification (Updated: 2022/08/05)</h2>
+<a href="#1">1 EfficientNetV2 Brain Tumor Classification </a><br>
+<a href="#1.1">1.1 Clone repository</a><br>
+<a href="#1.2">1.2 Install Python packages</a><br>
+<a href="#2">2 Python classes for MonkeyPox Detection</a><br>
+<a href="#3">3 Pretrained model</a><br>
+<a href="#4">4 Train</a><br>
+<a href="#4.1">4.1 Train script</a><br>
+<a href="#4.2">4.2 Training result</a><br>
+<a href="#5">5 Inference</a><br>
+<a href="#5.1">5.1 Inference script</a><br>
+<a href="#5.2">5.2 Sample test images</a><br>
+<a href="#5.3">5.3 Inference result</a><br>
+<a href="#6">6 Evaluation</a><br>
+<a href="#6.1">6.1 Evaluation script</a><br>
+<a href="#6.2">6.2 Evaluation result</a><br>
 
 <h2>
-1 EfficientNetV2 Brain Tumor Classification (Updated: 2022/08/03)
+<a id="1">1 EfficientNetV2 Brain Tumor Classification</a>
 </h2>
 
  This is a simple Brain Tumor Classification project based on <b>efficientnetv2</b> in <a href="https://github.com/google/automl">Brain AutoML</a>
@@ -11,20 +25,22 @@ EfficientNetV2 Brain Tumor Classification
  <br>
  We use python 3.8 and tensorflow 2.8.0 environment on Windows 11.<br>
 <li>
-Modified <a href="./CustomDataset.py">CustomDataset</a> class to be able the ImageDataGeneration parameters 
-from a data_generator.config file. (2022/08/01). 
+2022/08/01: Modified <a href="./CustomDataset.py">CustomDataset</a> class to be able the ImageDataGeneration parameters 
+from a data_generator.config file. 
 </li>
 <li>
-Modified <a href="./EfficientNetV2ModelTrainer.py">EfficientNetV2ModelTrainer</a> class to save the commandline training parameters
-as a file to a model_dir (2022/08/01). 
+2022/08/01: Modified <a href="./EfficientNetV2ModelTrainer.py">EfficientNetV2ModelTrainer</a> class to save the commandline training parameters
+as a file to a model_dir. 
 </li>
 <li>
-Updated <a href="./projects/Brain-Tumor-Classification/data_generator.config">data_generator.config</a> to improve inference accuracy.
- (2022/08/03). 
+2022/08/03: Updated <a href="./projects/Brain-Tumor-Classification/data_generator.config">data_generator.config</a> to improve inference accuracy.
+</li>
+<li>
+2022/08/04: Added <a href="./EfficientNetV2Evaluator.py">EfficientNetV2Evaluator</a> class to evaluate Testing dataset.
 </li>
    
 <h3>
-1.1 Clone repository
+<a id="1.1">1.1 Clone repository</a>
 </h3>
  Please run the following command in your working directory:<br>
 <pre>
@@ -54,6 +70,9 @@ You will have the following directory tree:<br>
 The images in test, Testing and Training folders have been taken from
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.
 <br> 
+<h3>
+<a id="#1.2">1.2 Install Python packages</a>
+</h3>
 <br>
 Please run the following commnad to install Python packages for this project.<br>
 <pre>
@@ -62,7 +81,7 @@ pip install -r requirements.txt
 <br>
 
 <h2>
-2 Python classes for Brain Tumor Classification
+<a id="2">2 Python classes for Brain Tumor Classification</a>
 </h2>
 We have defined the following python classes to implement our Brain Tumor Classification.<br>
 
@@ -70,24 +89,26 @@ We have defined the following python classes to implement our Brain Tumor Classi
 <a href="./CustomDataset.py">CustomDataset</a>
 </li>
 <li>
+<a href="./TestDataset.py">TestDataset</a>
+</li>
+<li>
 <a href="./EpochChangeCallback.py">EpochChangeCallback</a>
 </li>
-
 <li>
 <a href="./FineTuningModel.py">FineTuningModel</a>
 </li>
-
-
+<li>
+<a href="./EfficientNetV2Evaluator.py">EfficientNetV2Evaluator</a>
+</li>
 <li>
 <a href="./EfficientNetV2ModelTrainer.py">EfficientNetV2ModelTrainer</a>
 </li>
-
 <li>
 <a href="./EfficientNetV2Inferencer.py">EfficientNetV2Inferencer</a>
 </li>
 
 <h2>
-3 Pretrained model
+<a id="3">3 Pretrained model</a>
 </h2>
  We have used pretrained <b>efficientnetv2-m</b> to train Brain Tumor Classification Model by using
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.
@@ -103,12 +124,14 @@ Please download the pretrained checkpoint file from <a href="https://storage.goo
 </pre>
 
 <h2>
-4 Train and inference script files
+<a id="4">4 Train</a>
+
 </h2>
 <h3>
-4.1 Train script
+<a id="4.1">4.1 Train script</a>
 </h3>
-Please run the following bat file to train our brain-tumor efficientnetv2 model.<br>
+Please run the following bat file to train our brain-tumor efficientnetv2 model 
+by using <a href="./projects/Brain-Tumor-Classification/Training">Brain-Tumor-Classification Training dataset</a>.<br>
 <pre>
 ./1_train.bat
 </pre>
@@ -135,6 +158,10 @@ rem 1_train.bat
   --debug=True 
 </pre>
 
+<h3>
+<a id="4.2">4.2 Training result</a>
+</h3>
+
 This will generate a <b>best_model.h5</b> in the models folder specified by --model_dir parameter.<br>
 Furthermore, it will generate a <a href="./projects/Brain-Tumor-Classification/eval/train_accuracies.csv">train_accuracies</a>
 and <a href="./projects/Brain-Tumor-Classification/eval/train_losses.csv">train_losses</a> files
@@ -150,9 +177,11 @@ Train_losses:<br>
 <img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_24_0802.png" width="740" height="auto"><br>
 
 <br>
-
+<h2>
+<a id="5">5 Inference</a>
+</h2>
 <h3>
-4.2 Inference script
+<a id="5.1">5.1 Inference script</a>
 </h3>
 Please run the following bat file to infer the brain tumors in test images by the model generated by the above train command.<br>
 <pre>
@@ -181,6 +210,11 @@ meningioma_tumor
 no_tumor
 pituitary_tumor
 </pre>
+<br>
+<h3>
+<a id="5.2">5.2 Sample test images</a>
+</h3>
+
 Sample test images generated by <a href="./projects/Brain-Tumor-Classification/create_test_dataset.py">create_test_dataset.py</a> 
 from <a href="./projects/Brain-Tumor-Classification/Testing">Testing</a> taken from
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.<br>
@@ -193,7 +227,9 @@ no_tumor<br>
 pituitary_tumor<br>
 <img src="./projects/Brain-Tumor-Classification/test/pituitary_tumor___image(8)_106.jpg"  width="400" height="auto"><br><br>
 
-
+<h3>
+<a id="5.3">5.3 Inference result</a>
+</h3>
 This inference command will generate <a href="./projects/Brain-Tumor-Classification/inference/inference.csv">inference result file</a>.
 <br>
 Inference console output:<br>
@@ -202,4 +238,44 @@ Inference console output:<br>
 
 Inference result (inference.csv):<br>
 <img src="./asset/Brain-Tumor-Classification_inference_at_epoch_24_0802.png" width="740" height="auto"><br>
+<br>
+<a id="6">6 Evaluation</a>
+</h2>
+<h3>
+<a id="6.1">6.1 Evaluation script</a>
+</h3>
+Please run the following bat file to evaluate <a href="./projects/Brain-Tumor-Classification/Testing">Brain-Tumor-Classification Testing dataset</a> by the trained model.<br>
+<pre>
+./3_evaluate.bat
+</pre>
+<pre>
+rem 3_evaluate.bat
+python ../../EfficientNetV2Evaluator.py ^
+  --model_name=efficientnetv2-m  ^
+  --model_dir=./models ^
+  --data_dir=./Testing ^
+  --evaluation_dir=./evaluation ^
+  --fine_tuning=True ^
+  --trainable_layers_ratio=0.3 ^
+  --eval_image_size=480 ^
+  --num_classes=4 ^
+  --label_map=./label_map.txt ^
+  --mixed_precision=True ^
+  --debug=False 
+</pre>
+
+
+<h3>
+<a id="6.2">6.2 Evaluation result</a>
+</h3>
+
+This evaluation command will generate <a href="./projects/Brain-Tumor-Classification/evaluation/classification_report.csv">a classification report</a>
+ and <a href="./projects/Brain-Tumor-Classification/evaluation/confusion_matrix.png">a confusion_matrix</a>.
+<br>
+<br>
+Classification report:<br>
+<img src="./asset/Brain-Tumor-Classification_classification_report_at_epoch_24_0804.png" width="740" height="auto"><br>
+<br>
+Confusion matrix:<br>
+<img src="./projects/Brain-Tumor-Classification/evaluation/confusion_matrix.png" width="740" height="auto"><br>
 
