@@ -273,6 +273,11 @@ This evaluation command will generate <a href="./projects/Brain-Tumor-Classifica
  and <a href="./projects/Brain-Tumor-Classification/evaluation/confusion_matrix.png">a confusion_matrix</a>.
 <br>
 <br>
+Evaluation console output:<br>
+<img src="./asset/Brain-Tumor-Classification_evaluate_console_output_at_epoch_24_0805.png" width="740" height="auto"><br>
+<br>
+
+<br>
 Classification report:<br>
 <img src="./asset/Brain-Tumor-Classification_classification_report_at_epoch_24_0804.png" width="740" height="auto"><br>
 <br>
