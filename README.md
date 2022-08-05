@@ -239,6 +239,7 @@ Inference console output:<br>
 Inference result (inference.csv):<br>
 <img src="./asset/Brain-Tumor-Classification_inference_at_epoch_24_0802.png" width="740" height="auto"><br>
 <br>
+<h2>
 <a id="6">6 Evaluation</a>
 </h2>
 <h3>
