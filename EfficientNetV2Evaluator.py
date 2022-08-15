@@ -186,14 +186,14 @@ class EfficientNetV2Evaluator:
 
     report_df.to_csv(cls_report_csv_file)
 
-
-  def create_confusion_matrix(self, y_true, predictions, classes, save_dir, fig_size=(8, 6)):
+  # 2022/08/06: Added fmt='d' parameter.
+  def create_confusion_matrix(self, y_true, predictions, classes, save_dir, fig_size=(8, 6), fmt='d'):
     labels = sorted(list(set(y_true)))
     #print("--- y_true:\n{}".format(y_true))
     cmatrix = confusion_matrix(y_true, predictions, labels= labels) 
     print("--- confusion matrix:\n{}".format(cmatrix))
     plt.figure(figsize=fig_size) 
-    ax = sns.heatmap(cmatrix, annot = True, xticklabels=classes, yticklabels=classes, cmap = 'Blues')
+    ax = sns.heatmap(cmatrix, annot = True, fmt=fmt, xticklabels=classes, yticklabels=classes, cmap = 'Blues')
     ax.set_title('Confusion Matrix',fontsize = 14, weight = 'bold' ,pad=20)
 
     ax.set_xlabel('Predicted',fontsize = 12, weight='bold')
