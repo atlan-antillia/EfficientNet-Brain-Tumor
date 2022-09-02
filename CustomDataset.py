@@ -33,19 +33,19 @@ class CustomDataset:
 
 
   def create(self, FLAGS):
+    seed        = FLAGS.seed
     data_dir    = FLAGS.data_dir
     image_size  = FLAGS.image_size
-    #eval_image_size = FLAGS.eval_image_size
+    eval_image_size = FLAGS.eval_image_size
     target_size = (image_size, image_size)
-    #eval_size   = (eval_image_size, eval_image_size)
-    eval_size   = (image_size, image_size)
+    eval_size   = (eval_image_size, eval_image_size)
+    #eval_size   = (image_size, image_size)
     data_generator_config = FLAGS.data_generator_config
     parser      = ConfigParser(data_generator_config)
 
     batch_size  = FLAGS.batch_size
 
     TRAINING   = "training"
-    VALIDATION = "validation"
 
     data_augmentation = FLAGS.data_augmentation # 
     if data_augmentation:
@@ -65,71 +65,60 @@ class CustomDataset:
           horizontal_flip    = parser.get(TRAINING, "horizontal_flip", True),
           vertical_flip      = parser.get(TRAINING, "vertical_flip", True),
 
-          width_shift_range  = parser.get(TRAINING, "width_shift_range", 0.9), 
-          height_shift_range = parser.get(TRAINING, "height_shift_range", 0.9),
+          width_shift_range  = parser.get(TRAINING, "width_shift_range", 0.2), 
+          height_shift_range = parser.get(TRAINING, "height_shift_range", 0.2),
           shear_range        = parser.get(TRAINING, "shear_range", 0.1), 
           zoom_range         = parser.get(TRAINING, "zoom_range", 0.1), 
-          #zoom_range         = [0.8, 1.2],
-       )
+          #brightness_range   = parser.get(TRAINING, "brightness_range", [50,100]),
+          #channel_shift_range= parser.get(TRAINING, "channel_shift_range",100),
+          #fill_mode          = parser.get(TRAINING, "fill_mode", "nearest"), 
+          )
        train_generator = train_datagen.flow_from_directory(
              data_dir, 
              target_size   = target_size, 
              batch_size    = batch_size,
              interpolation = "bilinear",
-             subset        = "training", 
+             subset        = "training",
+             seed          = seed, 
              shuffle       = True)
-
        valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-          rescale            = 1/255,  
-          validation_split   = parser.get(VALIDATION, "validation_split", 0.2),
-
-          featurewise_center   = parser.get(VALIDATION, "featurewise_center", False),
-          samplewise_center    = parser.get(VALIDATION, "samplewise_center",  False),
-          featurewise_std_normalization = parser.get(VALIDATION, "featurewise_std_normalization", False),
-          samplewise_std_normalization  = parser.get(VALIDATION, "samplewise_std_normalization", False),
-          zca_whitening                 = parser.get(VALIDATION, "zca_whitening",                False),
-
-          rotation_range     = parser.get(VALIDATION, "rotation_range", 8),
-          horizontal_flip    = parser.get(VALIDATION, "horizontal_flip", True),
-          vertical_flip      = parser.get(VALIDATION, "vertical_flip", True),
-          width_shift_range  = parser.get(VALIDATION, "width_shift_range", 0.9), 
-          height_shift_range = parser.get(VALIDATION, "height_shift_range", 0.9),
-          shear_range        = parser.get(VALIDATION, "shear_range", 0.1), 
-          zoom_range         = parser.get(VALIDATION, "zoom_range", 0.1), 
-          #zoom_range         = [0.8, 1.2],
-       )
+             rescale            = 1/255,  
+             validation_split   = 0.2,
+             )
+      
        valid_generator = valid_datagen.flow_from_directory(
              data_dir, 
-             target_size   = target_size, 
-             batch_size    = 1, #batch_size, 
+             target_size   = eval_size, 
+             batch_size    = 1, #batch_size, # 1 
              interpolation = "bilinear",
-             subset        = "validation", 
+             subset        = "validation",
+             seed          = seed, 
              shuffle       = False)
 
     else:
        print("---- No data_augumentation ")
        train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
           rescale            = 1/255,  
-          validation_split   = 0.2,    
-       )
+          validation_split   = 0.2)
        train_generator = train_datagen.flow_from_directory(
              data_dir, 
              target_size   = target_size, 
              batch_size    = batch_size,
              interpolation = "bilinear",
-             subset        = "training", 
+             subset        = "training",
+             seed          = seed, 
              shuffle       = True)
 
        valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
           rescale            = 1/255,  
-          validation_split   = 0.2,
-       )
+          validation_split   = 0.2)
        valid_generator = valid_datagen.flow_from_directory(
              data_dir, 
-             target_size   = target_size, 
-             batch_size    = 1, #batch_size, 
+             target_size   = eval_size, 
+             batch_size    = 1, #batch_size,  #1  2022/08/12 
              interpolation = "bilinear",
              subset        = "validation", 
+             seed          = seed,
              shuffle       = False)
 
     return (train_generator, valid_generator)

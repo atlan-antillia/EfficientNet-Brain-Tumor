@@ -56,9 +56,9 @@ class ConfusionMatrix:
 
   def create(self, truth, predictions, classes, save_dir):
     labels = sorted(list(set(truth)))
-    print("--- truth {}".format(truth))
+    print("--- truth:\n {}".format(truth))
     cmatrix = confusion_matrix(truth, predictions, labels = labels) 
-    print("--- confusion matrix {}".format(cmatrix))
+    print("--- confusion matrix:\n {}".format(cmatrix))
     fig = plt.figure(figsize = self.fig_size) 
     fig.tight_layout()
 

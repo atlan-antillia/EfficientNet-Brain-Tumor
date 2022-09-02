@@ -121,8 +121,9 @@ venv.bak/
 /site
 
 #
+#2022/09/05
 efficientnetv2-m/
-projects/Brain-Tumor-Classification/models
+#projects/Brain-Tumor-Classification/models
 
 # mypy
 .mypy_cache/

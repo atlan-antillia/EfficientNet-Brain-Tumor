@@ -1,4 +1,4 @@
-<h2>EfficientNetV2 Brain Tumor Classification (Updated: 2022/08/15)</h2>
+<h2>EfficientNetV2 Brain Tumor Classification (Updated: 2022/09/03)</h2>
 <a href="#1">1 EfficientNetV2 Brain Tumor Classification </a><br>
 <a href="#1.1">1.1 Clone repository</a><br>
 <a href="#1.2">1.2 Install Python packages</a><br>
@@ -38,7 +38,9 @@ as a file to a model_dir.
 <li>
 2022/08/04: Added <a href="./EfficientNetV2Evaluator.py">EfficientNetV2Evaluator</a> class to evaluate Testing dataset.
 </li>
-   
+<li>
+2022/09/03: Updated <a href="./EfficientNetV2ModelTrainer.py">EfficientNetV2ModelTrainer</a> class.
+</li>
 <h3>
 <a id="1.1">1.1 Clone repository</a>
 </h3>
@@ -50,29 +52,35 @@ You will have the following directory tree:<br>
 <pre>
 .
 ├─asset
-├─g3doc
 └─projects
     └─Brain-Tumor-Classification
+        ├─Brain-Tumor-Images
+        │  ├─Testing
+        │  │  ├─glioma_tumor
+        │  │  ├─meningioma_tumor
+        │  │  ├─no_tumor
+        │  │  └─pituitary_tumor
+        │  └─Training
+        │      ├─glioma_tumor
+        │      ├─meningioma_tumor
+        │      ├─no_tumor
+        │      └─pituitary_tumor
         ├─eval
+        ├─evaluation
         ├─inference
-        ├─test
-        ├─Testing
-        │  ├─glioma_tumor
-        │  ├─meningioma_tumor
-        │  ├─no_tumor
-        │  └─pituitary_tumor
-        └─Training
-            ├─glioma_tumor
-            ├─meningioma_tumor
-            ├─no_tumor
-            └─pituitary_tumor
+        ├─models
+        └─test
 </pre>
 The images in test, Testing and Training folders have been taken from
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.
 <br><br>
-Brain-Tumor-Classification/Training/pituitary_tumor:<br>
+Sample images in Brain-Tumor-Classification/Brain-Tumor-Images/Training/pituitary_tumor:<br>
 <img src="./asset/Brain-Tumor-Classification_Training_pituitary_tumor.png" width="820" height="auto">
- 
+<br>
+The number of images in Brain-Tumor-Images dataset:<br>
+<img src="./projects/Brain-Tumor-Classification/_Brain-Tumor-Images_.png" width="640 height="auto">
+<br>
+
 <br>
 <h3>
 <a id="#1.2">1.2 Install Python packages</a>
@@ -122,7 +130,6 @@ Please download the pretrained checkpoint file from <a href="https://storage.goo
 .
 ├─asset
 ├─efficientnetv2-m
-├─g3doc
 └─projects
     └─Brain-Tumor-Classification
 </pre>
@@ -135,12 +142,13 @@ Please download the pretrained checkpoint file from <a href="https://storage.goo
 <a id="4.1">4.1 Train script</a>
 </h3>
 Please run the following bat file to train our brain-tumor efficientnetv2 model 
-by using <a href="./projects/Brain-Tumor-Classification/Training">Brain-Tumor-Classification Training dataset</a>.<br>
+by using <a href="./projects/Brain-Tumor-Classification/Brain-Tumor-Images/Training">Brain-Tumor-Classification/Brain-Tumor-Images/Training dataset</a>.<br>
 <pre>
 ./1_train.bat
 </pre>
 <pre>
 rem 1_train.bat
+python ../../EfficientNetV2ModelTrainer.py ^
   --model_dir=./models ^
   --model_name=efficientnetv2-m  ^
   --data_generator_config=./data_generator.config ^
@@ -149,17 +157,53 @@ rem 1_train.bat
   --num_classes=4 ^
   --image_size=384 ^
   --eval_image_size=480 ^
-  --data_dir=./Training ^
+  --data_dir=./Brain-Tumor-Images/Training ^
   --model_dir=./models ^
   --data_augmentation=True ^
+  --valid_data_augmentation=True ^
   --fine_tuning=True ^
   --monitor=val_loss ^
-  --learning_rate=0.002 ^
-  --trainable_layers_ratio=0.3 ^
+  --learning_rate=0.0002 ^
+  --trainable_layers_ratio=0.4 ^
+  --dropout_rate=0.4 ^
   --num_epochs=50 ^
   --batch_size=4 ^
   --patience=10 ^
-  --debug=True 
+  --debug=True  
+</pre>
+, and data_generator.config is the following:<br>
+<pre>
+; data_generation.config
+
+[training]
+validation_split   = 0.2
+featurewise_center = False
+samplewise_center  = True
+featurewise_std_normalization=False
+samplewise_std_normalization  =True
+zca_whitening                =False
+rotation_range     = 6
+horizontal_flip    = True
+width_shift_range  = 0.1
+height_shift_range = 0.1
+shear_range        = 0.1
+zoom_range         = [0.2, 2.0]
+data_format        = "channels_last"
+
+[validation]
+validation_split   = 0.2
+featurewise_center = False
+samplewise_center  = True
+featurewise_std_normalization=False
+samplewise_std_normalization  =True
+zca_whitening                =False
+rotation_range     = 6
+horizontal_flip    = True
+width_shift_range  = 0.1
+height_shift_range = 0.1
+shear_range        = 0.1
+zoom_range         = [0.2, 2.0]
+data_format        = "channels_last"
 </pre>
 
 <h3>
@@ -171,14 +215,14 @@ Furthermore, it will generate a <a href="./projects/Brain-Tumor-Classification/e
 and <a href="./projects/Brain-Tumor-Classification/eval/train_losses.csv">train_losses</a> files
 <br>
 Training console output:<br>
-<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_24_0802.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_train_console_output_at_epoch_14_0905.png" width="740" height="auto"><br>
 <br>
 Train_accuracies:<br>
-<img src="./asset/Brain-Tumor-Classification_train_accuracies_at_epoch_24_0802.png" width="740" height="auto"><br>
+<img src="./projects/Brain-Tumor-Classification/eval/train_accuracies.png" width="740" height="auto"><br>
 
 <br>
 Train_losses:<br>
-<img src="./asset/Brain-Tumor-Classification_train_losses_at_epoch_24_0802.png" width="740" height="auto"><br>
+<img src="./projects/Brain-Tumor-Classification/eval/train_losses.png" width="740" height="auto"><br>
 
 <br>
 <h2>
@@ -197,7 +241,8 @@ python ../../EfficientNetV2Inferencer.py ^
   --model_name=efficientnetv2-m  ^
   --model_dir=./models ^
   --fine_tuning=True ^
-  --trainable_layers_ratio=0.3 ^
+  --trainable_layers_ratio=0.4 ^
+  --dropout_rate=0.4 ^
   --image_path=./test/*.jpg ^
   --eval_image_size=480 ^
   --num_classes=4 ^
@@ -220,14 +265,14 @@ pituitary_tumor
 </h3>
 
 Sample test images generated by <a href="./projects/Brain-Tumor-Classification/create_test_dataset.py">create_test_dataset.py</a> 
-from <a href="./projects/Brain-Tumor-Classification/Testing">Testing</a> taken from
+from <a href="./projects/Brain-Tumor-Classification/Brain-Tumor-Images/Testing">Brain-Tumor-Images/Testing</a> taken from
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.<br>
  <br>
 Brain-Tumor-Classification/test:<br>
 <img src="./asset/Brain-Tumor-Classification_test.png" width="820" height="auto"><br>
 <br>
 <br>
-Brain-Tumoer-Classification/test sample images:<br>
+Sample images in Brain-Tumoer-Classification/test:<br>
 
 glioma_tumor<br>
 <img src="./projects/Brain-Tumor-Classification/test/glioma_tumor___image(8)_101.jpg"  width="400" height="auto"><br><br>
@@ -244,11 +289,11 @@ pituitary_tumor<br>
 This inference command will generate <a href="./projects/Brain-Tumor-Classification/inference/inference.csv">inference result file</a>.
 <br>
 Inference console output:<br>
-<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_24_0802.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_infer_console_output_at_epoch_14_0905.png" width="740" height="auto"><br>
 <br>
 
 Inference result (inference.csv):<br>
-<img src="./asset/Brain-Tumor-Classification_inference_at_epoch_24_0802.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_inference_at_epoch_14_0905.png" width="740" height="auto"><br>
 <br>
 <h2>
 <a id="6">6 Evaluation</a>
@@ -256,7 +301,8 @@ Inference result (inference.csv):<br>
 <h3>
 <a id="6.1">6.1 Evaluation script</a>
 </h3>
-Please run the following bat file to evaluate <a href="./projects/Brain-Tumor-Classification/Testing">Brain-Tumor-Classification Testing dataset</a> by the trained model.<br>
+Please run the following bat file to evaluate <a href="./projects/Brain-Tumor-Classification/Brain-Tumor-Images/Testing">
+Brain-Tumor-Images/Testing dataset</a> by the trained model.<br>
 <pre>
 ./3_evaluate.bat
 </pre>
@@ -265,10 +311,11 @@ rem 3_evaluate.bat
 python ../../EfficientNetV2Evaluator.py ^
   --model_name=efficientnetv2-m  ^
   --model_dir=./models ^
-  --data_dir=./Testing ^
+  --data_dir=./Brain-Tumor-Images/Testing ^
   --evaluation_dir=./evaluation ^
   --fine_tuning=True ^
-  --trainable_layers_ratio=0.3 ^
+  --trainable_layers_ratio=0.4 ^
+  --dropout_rate=0.4 ^
   --eval_image_size=480 ^
   --num_classes=4 ^
   --label_map=./label_map.txt ^
@@ -286,12 +333,12 @@ This evaluation command will generate <a href="./projects/Brain-Tumor-Classifica
 <br>
 <br>
 Evaluation console output:<br>
-<img src="./asset/Brain-Tumor-Classification_evaluate_console_output_at_epoch_24_0805.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_evaluate_console_output_at_epoch_14_0905.png" width="740" height="auto"><br>
 <br>
 
 <br>
 Classification report:<br>
-<img src="./asset/Brain-Tumor-Classification_classification_report_at_epoch_24_0804.png" width="740" height="auto"><br>
+<img src="./asset/Brain-Tumor-Classification_classification_report_at_epoch_14_0904.png" width="740" height="auto"><br>
 <br>
 Confusion matrix:<br>
 <img src="./projects/Brain-Tumor-Classification/evaluation/confusion_matrix.png" width="740" height="auto"><br>

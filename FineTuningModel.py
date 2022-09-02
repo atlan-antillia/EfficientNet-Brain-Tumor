@@ -17,9 +17,9 @@
 
 # FineTuningModel.py
 
-import copy
+#import copy
 import os
-import re
+#import re
 import sys
 
 from absl import app
@@ -27,7 +27,12 @@ from absl import flags
 from absl import logging
 import numpy as np
 import tensorflow as tf
+
+
+import numpy as np
+import random as rn
 from effnetv2_model import EffNetV2Model
+FLAGS = flags.FLAGS
 
 import cflags
 import datasets
@@ -39,11 +44,14 @@ import utils
 sys.path.append("../../")
 
 
+#Please specify --fine_tuning=False, 
+# If your would like to create a transfer-learning model,
+# please specify --fine_tuning=False 
+
 class FineTuningModel:
   #Constructor
   def __init__(self, model_name, pretrained_ckpt, debug=True):
-  #def __init__(self, model_name, debug=True):
-
+ 
     self.model = None
     self.debug = debug
     #self.channels_first = channels_first
@@ -62,12 +70,20 @@ class FineTuningModel:
       if tf.io.gfile.isdir(pretrained_ckpt):
         pretrained_ckpt = tf.train.latest_checkpoint(pretrained_ckpt)
       self.base_model.load_weights(pretrained_ckpt)
-      print("------------loaded weight {}".format(pretrained_ckpt))
+      print("--- loaded weight {}".format(pretrained_ckpt))
+      
 
-
-  def show_layers(self):
+  def show_base_model_layers(self):
+    print("--- EfficientNetV2")
     if self.debug:
       for i, layer in enumerate(self.base_model.layers):
+        print("---  i: {} name: {} trainable:{}".format(i, layer.name, layer.trainable))
+
+
+  def show_customized_model_layers(self):
+    print("--- Customized EfficientNetV2")
+    if self.debug:
+      for i, layer in enumerate(self.model.layers):
         print("---  i: {} name: {} trainable:{}".format(i, layer.name, layer.trainable))
 
   def build(self, image_size, num_classes, fine_tuning, trainable_layers_ratio=0.3):
@@ -87,19 +103,27 @@ class FineTuningModel:
           layer.trainable = False
         else:
           layer.trainable = True
-
-    self.show_layers()
-
+    else:
+      # 2022/08/16 Transfer Learning
+      self.base_model.trainable = False
+    
+    self.show_base_model_layers()
     input_shape = [image_size, image_size, 3]
 
     self.model = tf.keras.models.Sequential([
       tf.keras.layers.InputLayer(input_shape=input_shape, name='image', dtype=tf.float32),
       self.base_model,
-      tf.keras.layers.Dropout(rate=0.2),
+      tf.keras.layers.Dropout(FLAGS.dropout_rate),
+      #tf.keras.layers.Dropout(rate=0.3),
+
       tf.keras.layers.Dense(num_classes, 
                           name       = "predictions",
-                          kernel_regularizer=tf.keras.regularizers.l2(0.0001))
+                          kernel_regularizer=tf.keras.regularizers.l2(0.0001)
+                          )
+                          
     ])
+    
+    self.show_customized_model_layers()
 
     return self.model
 

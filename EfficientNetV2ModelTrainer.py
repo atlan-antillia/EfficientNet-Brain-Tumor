@@ -14,21 +14,10 @@
 # ==============================================================================
 """A simple script to train efficient net with tf2/keras."""
 
-# 2022/07/20 Copyright (C) antillia.com
+# 2022/08/06 Copyright (C) antillia.com
 # This is based on github.google/automl/efficientdet/main_tf2.py
 
 # EfficientNetV2ModelTrainer.py
-"""
-efficientnet_params = {
-        # (block, width, depth, train_size, eval_size, dropout, randaug, mixup, aug)
-        'efficientnetv2-s':    # 83.9% @ 22M
-                (v2_s_block, 1.0, 1.0, 300, 384, 0.2, 10, 0, 'randaug'),
-        'efficientnetv2-m':    # 85.2% @ 54M
-                (v2_m_block, 1.0, 1.0, 384, 480, 0.3, 15, 0.2, 'randaug'),
-        'efficientnetv2-l':    # 85.7% @ 120M
-                (v2_l_block, 1.0, 1.0, 384, 480, 0.4, 20, 0.5, 'randaug'),
-
-"""
 
 import os
 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
@@ -53,12 +42,22 @@ import utils
 #import effnetv2_model
 
 import shutil
+import random as rn
+
+###
+
+# 2022/08/17
+#https://github.com/NVIDIA/framework-determinism/blob/master/doc/tensorflow.md
+os.environ['PYTHONHASHSEED'] = '0'
+#os.environ['TF_DETERMINISTIC_OPS'] = 'true'
+os.environ['TF_CUDNN_DETERMINISTIC'] = 'true'
 
 sys.path.append("../../")
 
 from CustomDataset import CustomDataset
 from FineTuningModel import FineTuningModel
 from EpochChangeCallback import EpochChangeCallback
+from ConfusionMatrix import ConfusionMatrix
 
 FLAGS = flags.FLAGS
 
@@ -77,28 +76,31 @@ else:
 class EfficientNetV2ModelTrainer:
   # Constructor
   def __init__(self):
+    self.reset_random_seeds(FLAGS.seed)    
+
     self.model = None
     self.num_epochs= FLAGS.num_epochs # 2 #@param {type:"integer"}
     image_size     = FLAGS.image_size 
     customDataset  = CustomDataset()
     (self.train_generator, self.valid_generator) = customDataset.create(FLAGS)
-
+     
     tf.keras.backend.clear_session()
-
+    class_indices = self.train_generator.class_indices
+    #self.class_indices takes the following format:
+    # {'cat': 0, 'dog': 1}
     print("--- num_classes {}".format(self.train_generator.num_classes))
-    #model_name = "efficientnetv2-s"
     model_name  = FLAGS.model_name
-    num_classes = FLAGS.num_classes
+  
     fine_tuning = FLAGS.fine_tuning
     ckpt_dir    = FLAGS.ckpt_dir
+    num_classes = len(class_indices)
 
     trainable_layers_ratio = FLAGS.trainable_layers_ratio
-    """
-    if not (trainable_layers_ratio > 0.1 or trainable_layers_ratio <1.0):
+    
+    if trainable_layers_ratio < 0.1 or trainable_layers_ratio > 1.0:
        print("--- Set default trainable_layers_ratio=0.3")
        trainable_layers_ratio = 0.3
-    """
-    
+    print(trainable_layers_ratio)
     finetuning_model = FineTuningModel(model_name, ckpt_dir)
     
     self.model = finetuning_model.build(image_size, 
@@ -112,7 +114,13 @@ class EfficientNetV2ModelTrainer:
     model_dir = FLAGS.model_dir
     if not os.path.exists(model_dir):
       os.makedirs(model_dir)
-    self.save_train_params(sys.argv, model_dir)          
+    self.save_train_params(sys.argv, model_dir)
+
+  def reset_random_seeds(self, seed):
+    tf.random.set_seed(seed)
+    np.random.seed(seed)
+    rn.seed(seed)
+    tf.compat.v1.set_random_seed(seed)
 
 
   def save_train_params(self, argv, dir, section="train"):
@@ -230,7 +238,12 @@ class EfficientNetV2ModelTrainer:
       verbose=1
       )
 
+    #2022/08/26
+    epch_callback.save_eval_graphs()
+
+    
 def main(_) -> None:
+
   trainer = EfficientNetV2ModelTrainer()
   trainer.compile()
   trainer.train_eval()

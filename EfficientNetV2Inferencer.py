@@ -32,12 +32,17 @@ from absl import app
 from absl import flags
 from absl import logging
 import tensorflow as tf
+import traceback
 
 import preprocessing
 
 sys.path.append("../../")
+#from PILImageCropper import PILImageCropper
+
 
 from FineTuningModel import FineTuningModel
+#from ConfusionMatrix import ConfusionMatrix
+
 import tensorflow as tf
 
 from tensorflow.python.ops.numpy_ops import np_config
@@ -62,7 +67,9 @@ def define_flags():
 
   # 2022/07/20
   flags.DEFINE_integer('eval_image_size', None, 'Image size.')
-  
+  # 2022/08/14
+  flags.DEFINE_float('dropout_rate',  0.3, 'Dropout rate.')
+
   flags.DEFINE_string('strategy', 'gpu', 'Strategy: tpu, gpus, gpu.')
   flags.DEFINE_integer('num_classes', 10, 'Number of classes.')
   flags.DEFINE_string('best_model_name', 'best_model.5h', 'Best model name.')
@@ -86,8 +93,9 @@ class EfficientNetV2Inferencer:
     with open(FLAGS.label_map, "r") as f:
        lines = f.readlines()
        for line in lines:
+        line = line.strip()
         if len(line) >0:
-          self.classes.append(line.strip())
+          self.classes.append(line)
     print("--- classes {}".format(self.classes))
 
     tf.keras.backend.clear_session()
@@ -96,12 +104,18 @@ class EfficientNetV2Inferencer:
   
     model_name  = FLAGS.model_name
     image_size  = FLAGS.image_size
-    num_classes = FLAGS.num_classes
+    self.image_size = image_size
+    #num_classes = FLAGS.num_classes
+    num_classes = len(self.classes)
     fine_tuning = FLAGS.fine_tuning
     trainable_layers_ratio = FLAGS.trainable_layers_ratio
+
+    if trainable_layers_ratio < 0.1 or trainable_layers_ratio >=0.5:
+       print("--- Set default trainable_layers_ratio=0.3")
+       trainable_layers_ratio = 0.3
     
     finetuning_model = FineTuningModel(model_name, None, FLAGS.debug)
-
+    
     self.model = finetuning_model.build(image_size, 
                                         num_classes, 
                                         fine_tuning, 
@@ -117,7 +131,7 @@ class EfficientNetV2Inferencer:
     print("--- loaded weights {}".format(best_model))
   
 
-  def infer(self ):
+  def infer(self):
     infer_dir   = FLAGS.infer_dir
     if not os.path.exists(infer_dir):
       os.makedirs(infer_dir)
@@ -134,18 +148,29 @@ class EfficientNetV2Inferencer:
       #print(" {}".format(image_files))
       print("--- eval_image_size {}".format(FLAGS.eval_image_size))
       print("\n--- image_path {}".format(FLAGS.image_path))
+      image_size  = FLAGS.eval_image_size
       for image_file in image_files:
-
         image = tf.io.read_file(image_file)
         image = preprocessing.preprocess_image(
           image, 
           image_size  = FLAGS.eval_image_size, 
           is_training = False)
-        # A tensor with a length 1 axis inserted at index axis.
+      
+        """        
+        image = tf.keras.preprocessing.image.load_img(image_file, target_size=(image_size, image_size),
+            color_mode = 'rgb',
+            interpolation='nearest')
+
+        image = tf.keras.preprocessing.image.img_to_array(image)
+        image = (image)* 1.0/255.0
+        """
+        
         image  = tf.expand_dims(image, 0)
+        
         logits = self.model(image, training=False)
 
         pred   = tf.keras.layers.Softmax()(logits)
+        #print("------------pred {}".format(pred))
         idx    = tf.argsort(logits[0])[::-1][:5].numpy()
         basename = os.path.basename(image_file)
         clsname = ""
@@ -160,15 +185,14 @@ class EfficientNetV2Inferencer:
 
         line = basename + SP + clsname  
 
-
         TOP2 = 2
         for i, id in enumerate(idx):
-          #print(f'top {i+1} ({pred[0][id]*100:.1f}%):  {self.classes[id]} ')
+          print(f'top {i+1} ({pred[0][id]*100:.1f}%):  {self.classes[id]} ')
           score = round(float(pred[0][id]), 4)
           label = self.classes[id] 
           line = line + SP + label + SP + str(score) 
 
-          print(f'prediction {i+1} ({pred[0][id]*100:.1f}%):  {self.classes[id]} ')
+          #print(f'prediction {i+1} ({pred[0][id]*100:.1f}%):  {self.classes[id]} ')
           if (i + 1) ==TOP2: 
             break
         #print(line)
