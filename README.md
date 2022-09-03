@@ -75,7 +75,7 @@ The images in test, Testing and Training folders have been taken from
  <a href="https://github.com/sartajbhuvaji/brain-tumor-classification-dataset">brain-tumor-classificaiton-dataset</a>.
 <br><br>
 The number of images in Brain-Tumor-Images dataset:<br>
-<img src="./projects/Brain-Tumor-Classification/_Brain-Tumor-Images_.png" width="640 height="auto">
+<img src="./projects/Brain-Tumor-Classification/_Brain-Tumor-Images_.png" width="740 height="auto">
 <br>
 Sample images in Brain-Tumor-Classification/Brain-Tumor-Images/Training/glioma_tumor:<br>
 <img src="./asset/Brain-Tumor-Classification_Training_glioma_tumor.png" width="820" height="auto">
