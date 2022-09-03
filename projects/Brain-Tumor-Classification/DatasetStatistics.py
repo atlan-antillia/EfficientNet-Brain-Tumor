@@ -52,9 +52,9 @@ class DatasetStatistics:
     # sub_dirs = test, train 
     #plt.title(dataset_dir)
 
-    fig = plt.figure(figsize=(12,6))
+    fig = plt.figure(figsize=(12,8))
     fig.suptitle(dataset_dir, fontsize=self.fig_title_fontsize, weight='bold')
-    plt.subplots_adjust(wspace=0.5,)
+    plt.subplots_adjust(wspace=0.3,)
     subdirs = sorted(subdirs)
     subdirs.reverse()
     i = 0
@@ -71,9 +71,13 @@ class DatasetStatistics:
 
        ax = fig.add_subplot(1, 2, 1+i)
        ax.set_ylim(0, YMAX)
+       #ax.xticks(rotation=45)
 
        i += 1
        graph = plt.bar(labels, counts)
+       for label in ax.get_xticklabels():
+         label.set_rotation(30)
+         label.set_ha('right')
        self.setvalue(graph, counts)
        #plt.xlabel("Labels", fontsize=self.label_fontsize)
        ax.set_xlabel("Labels", fontsize = self.label_fontsize, weight = 'bold')
